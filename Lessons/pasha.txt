@@ -1,0 +1,84 @@
+function init() {
+    console.info("initialized"); //console.log,info,error,warn,debug
+
+    var canvas = document.getElementById("game");
+    var c = canvas.getContext("2d"); /*или назвать ctx*/
+
+    /*drawings go here*/
+
+    //CONSTANTS
+    var rotAngle = 1;
+    var bladesCount = 5;
+
+    function drawBlade(ind) {
+        c.save();
+        c.strokeRect(0,0, 20, 80);
+
+        //TODO prepare cord system
+        c.translate(10, 80);
+        drawCords();
+
+        //TODO call drawRope()
+        c.rotate(-rotAngle);
+        drawRope();
+        c.restore();
+    }
+
+    function drawRope() {
+        c.save();
+        c.strokeRect(0,0, 3, 60);
+        c.restore();
+    }
+
+    //Функция рисования кадров
+    function drawFrame() {
+        c.save();
+
+        c.clearRect(0, 0, canvas.width, canvas.height);
+        c.translate(canvas.width / 2, canvas.height / 2);
+        c.rotate(rotAngle);
+
+        //TODO in loop
+        for (var i = 1; i <= bladesCount; i++) {
+            c.rotate(2*Math.PI / bladesCount);
+            drawBlade(i);
+        }
+
+        //drawCords();
+
+        c.restore();
+    }
+
+    //РИСУЕМ КООРДИНАТЫ
+    function drawCords() {
+        c.save();
+
+        //x axis
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(20, 0);
+        c.strokeStyle = 'blue';
+        c.stroke();
+
+        c.beginPath();
+        c.moveTo(0, 0);
+        c.lineTo(0, 20);
+        c.strokeStyle = 'red';
+        c.stroke();
+
+        c.restore();
+    }
+
+
+    function animate() {
+        rotAngle += 0.025;
+    }
+
+    //"Игровой Цикл"
+    function loop() {
+        animate();
+        drawFrame();
+        requestAnimationFrame(loop);
+    }
+    requestAnimationFrame(loop);
+}

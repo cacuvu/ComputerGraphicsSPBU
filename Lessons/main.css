@@ -1,0 +1,14 @@
+body {
+  background-color: #DDD;
+  padding: 0;
+}
+
+#game {
+  border: 1px solid black;
+  display: block;
+  margin: 1em auto;
+}
+
+.hidden {
+  display: none;
+}
