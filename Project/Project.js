@@ -30,19 +30,11 @@ function init() {
         }
     });
 
-    /*var worldArr = [
-        [0,1,2],
-        [3,4,5],
-        [6,7,8]
-    ];*/
-
+    //SET CURRENT FRAME
     var currentFrameCords = {i : 0, j: 0};
-
     function setCurrentFrame(i, j) {
         currentFrameCords = {i: i, j: j};
-
         return currentWorldFrame.gotoAndPlay("f" + i + j);
-
     }
 
     //CURRENT WORLD FRAME
@@ -51,7 +43,6 @@ function init() {
 
     //CHARACTER
     var charSpeed = 4;
-
     var testChar = new createjs.Shape();
     testChar.graphics
         .beginFill("green")
@@ -63,6 +54,30 @@ function init() {
     testChar.y = 150;
 
     stage.addChild(testChar);
+
+    //PLAYER INVENTORY
+    var playerInv = {i: 0, j : 0};
+
+    //ITEM ---->
+    var isPicked = false;
+    var testItem = new createjs.Shape();
+    testItem.graphics
+        .beginFill("#FFFE00")
+        .rect(0,0, 10,10);
+    testItem.regX = 5;
+    testItem.regY = 5;
+
+    //TEST DOOR ---->
+    var canDelete = false;
+    var testDoor = new createjs.Shape();
+    testDoor.graphics
+        .beginFill("#ff0f26")
+        .rect(0,0, 10, 60);
+    testDoor.regX = 5;
+    testDoor.regY = 30;
+
+    //stage.addChild(testItem);
+    // <----
 
     stage.update();
 
@@ -81,12 +96,47 @@ function init() {
     setCurrentFrame(frameCounterY, frameCounterX);
     console.log(currentFrameCords);
 
-    //TEST
+    //CANVAS
     var ctx = canvas.getContext('2d');
-    //var pixelData = ctx.getImageData(testChar.x + 12, testChar.y, 1, 1).data;
+
+    function checkWorldNoCollision(x0, y0) {
+        var col = ctx.getImageData(x0, y0, 1, 1).data;
+        console.log(col);
+        return col[1] === 255 || col[1] === 0;
+        //return (col[1] === 255 && col[77] === 255 || col[1] === 0 && col[77] === 0)
+    }
+
+    function setItemInCurrentFrame(posX, posY, item) {
+        item.x = posX;
+        item.y = posY;
+        return stage.addChild(item);
+    }
+
+    function deleteItemFromCurrentFrame(item) {
+        return stage.removeChild(item)
+    }
+
+    function addItemToInventory(item) {
+        isPicked = true;
+        playerInv.i = 1;
+        return stage.removeChild(item);
+    }
 
     //GAME LOOP
     function tick() {
+
+        //TEST KEY
+        if (currentFrameCords.i === 1 && currentFrameCords.j === 0 && !isPicked)
+            setItemInCurrentFrame(50,50, testItem);
+        else
+            deleteItemFromCurrentFrame(testItem);
+
+        //TEST DOOR
+        if (currentFrameCords.i === 0 && currentFrameCords.j === 1)
+            setItemInCurrentFrame(480,100, testDoor);
+        else
+            deleteItemFromCurrentFrame(testDoor);
+
 
         /*var pixelDataRight = ctx.getImageData(testChar.x + 11, testChar.y - 11, 1,20).data;
         var pixelDataLeft = ctx.getImageData(testChar.x - 11, testChar.y - 11,1, 20).data;
@@ -100,31 +150,29 @@ function init() {
         if (keys[40] && (pixelDataTop[1] === 255 && pixelDataTop[77] === 255 || pixelDataTop[1] === 0 && pixelDataTop[77] === 0)) testChar.y += charSpeed;*/
 
         if (keys[37]) {
-            var pixelDataLeft = ctx.getImageData(testChar.x - 15, testChar.y,1, 1).data;
-            console.log(pixelDataLeft);
-            if ((pixelDataLeft[1] === 255 || pixelDataLeft[1] === 0))
+            if (checkWorldNoCollision(testChar.x - 15, testChar.y))
                 testChar.x -= charSpeed;
+            else
+                addItemToInventory(testItem);
         }
-        if (keys[38] ) {
-            var pixelDataBottom = ctx.getImageData(testChar.x, testChar.y - 15, 1, 1).data;
-            console.log(pixelDataBottom);
-            if (pixelDataBottom[1] === 255 || pixelDataBottom[1] === 0)
+        if (keys[38]) {
+            if (checkWorldNoCollision(testChar.x, testChar.y - 15))
                 testChar.y -= charSpeed;
+            else
+                addItemToInventory(testItem);
         }
         if (keys[39]) {
-            var pixelDataRight = ctx.getImageData(testChar.x + 15, testChar.y, 1,1).data;
-            console.log(pixelDataRight);
-            if (pixelDataRight[1] === 255 || pixelDataRight[1] === 0)
+            if (checkWorldNoCollision(testChar.x + 15, testChar.y))
                 testChar.x += charSpeed;
+            else
+                addItemToInventory(testItem);
         }
         if (keys[40]) {
-            var pixelDataTop = ctx.getImageData(testChar.x, testChar.y + 13, 1, 1).data;
-            console.log(pixelDataTop);
-            if (pixelDataTop[1] === 255 || pixelDataTop[1] === 0)
+            if (checkWorldNoCollision(testChar.x, testChar.y + 15))
                 testChar.y += charSpeed;
+            else
+                addItemToInventory(testItem);
         }
-
-
 
 
         //WORLD BORDERS
@@ -163,7 +211,6 @@ function init() {
             console.log(currentFrameCords);
             testChar.y = 299;
         }
-
 
         stage.update();
     }
