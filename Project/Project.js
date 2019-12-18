@@ -29,6 +29,8 @@ function init() {
         }
     });
 
+    var test;
+
     //SET CURRENT FRAME
     var currentFrameCords = {i : 0, j: 0};
     function setCurrentFrame(i, j) {
@@ -200,7 +202,7 @@ function init() {
             posX: 460,
             posY: 140,
             bitmap: key_4Sp
-        },
+        }
     ];
 
     //KEYBOARD INPUT
