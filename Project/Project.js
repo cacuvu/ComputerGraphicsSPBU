@@ -131,6 +131,12 @@ function init() {
     var key_4Sp = new createjs.Sprite(key_4);
     key_4Sp.gotoAndPlay("key_4");
 
+    var key_1_bitmap = new createjs.Bitmap("Sprites/Silver_key.png");
+    var key_2_bitmap = new createjs.Bitmap("Sprites/Green_key.png");
+    var key_3_bitmap = new createjs.Bitmap("Sprites/Red_key.png");
+    var key_4_bitmap = new createjs.Bitmap("Sprites/Gold_key.png");
+
+
     stage.update();
 
     //TICKER
@@ -217,14 +223,17 @@ function init() {
 
     function checkWorldNoCollision(x0, y0) {
         var col = ctx.getImageData(x0, y0, 1, 1).data;
-        return col[0] === 61 || col[0] === 54 || col[0] === 0;
+        console.log(col);
+        return col[0] === 61 || col[0] === 54 || col[0] === 0 || col[0] === 163 || col[0] === 235
+            || col[0] === 90 || col[0] === 131 || col[0] === 192 || col[0] === 255 || col[0] === 37
+            || col[0] === 184 || col[0] === 36 || col[0] === 60;
     }
 
     //SET ITEM
     function setItemInCurrentFrame(posX, posY, item) {
         item.x = posX;
         item.y = posY;
-        return stage.addChildAt(item, 1);
+        return stage.addChildAt(item, 2);
     }
 
     //DELETE ITEM
@@ -288,14 +297,22 @@ function init() {
                     if (object.bitmap === key_4Sp)
                         goldKey = true;
                 }
-                if (silverKey && object.bitmap === key_1Sp)
+                if (silverKey && object.bitmap === key_1Sp) {
                     deleteItemFromCurrentFrame(object.bitmap);
-                if (greenKey && object.bitmap === key_2Sp)
+                    setItemInCurrentFrame(10,10,key_1_bitmap);
+                }
+                if (greenKey && object.bitmap === key_2Sp) {
                     deleteItemFromCurrentFrame(object.bitmap);
-                if (redKey && object.bitmap === key_3Sp)
+                    setItemInCurrentFrame(60,10,key_2_bitmap);
+                }
+                if (redKey && object.bitmap === key_3Sp) {
                     deleteItemFromCurrentFrame(object.bitmap);
-                if (goldKey && object.bitmap === key_4Sp)
+                    setItemInCurrentFrame(110,10,key_3_bitmap);
+                }
+                if (goldKey && object.bitmap === key_4Sp) {
                     deleteItemFromCurrentFrame(object.bitmap);
+                    setItemInCurrentFrame(160,10,key_4_bitmap);
+                }
             }
             if (object.frameX === currentFrameCords.j && object.frameY === currentFrameCords.i && object.type === "door") {
                 if (checkDoorCollision(char.x, object.posX, char.y, object.posY)) {
